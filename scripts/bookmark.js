@@ -147,7 +147,8 @@ const bookmark = (function() {
   //in charge of the cancel adding bookmark functionality
   const handleCancelAddBookmark = function() {
     //event listener for when user clicks cancel in the form
-    $('form').on('click', '.js-cancel-create-bookmark-button', event => {
+    $('form').on('click', '.cancel-create-bookmark-button', event => {
+      console.log('here');
       //toggle adding in the store
       store.toggleAddingABookmark();
       //toggle the hidden bool for form
