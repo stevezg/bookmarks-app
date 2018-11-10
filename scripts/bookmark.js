@@ -10,6 +10,7 @@ const bookmark = (function() {
       type="text"
       class="input-bookmark-url"
       placeholder="enter url"
+      name="url"
     />
     <label for="description">Description</label>
     <textarea
@@ -86,7 +87,7 @@ const bookmark = (function() {
         <input id = "title" name = "title" type = "text" class = "edit-bookmark-title js-edit-bookmark-title" value = "${
           bookmark.title
         }"></input>
-        <label for = "url">URL:</label>
+        <label for = "url">Link</label>
         <input id = "url" name = "url" type = "text" class = "edit-bookmark-url js-edit-bookmark-url" value = "${
           bookmark.url
         }"></input>
@@ -159,6 +160,7 @@ const bookmark = (function() {
     $('form').on('submit', event => {
       event.preventDefault();
       const newBookmark = $(event.target).serializeJson();
+
       console.log(newBookmark);
       api.createBookmark(
         newBookmark,
@@ -167,7 +169,6 @@ const bookmark = (function() {
           store.toggleAddingABookmark();
           $('form').toggle();
           store.addBookmark(bookmark);
-          store.setError(null);
           renderAddBookmarkForm();
           render();
         },
@@ -195,6 +196,7 @@ const bookmark = (function() {
     let bookmarks = [...store.bookmarks];
 
     console.log(bookmarks);
+
     if (store.filter) {
       bookmarks = bookmarks.filter(bookmark => bookmark.rating >= store.filter);
     }

@@ -16,7 +16,9 @@ const api = (function() {
       method: 'POST',
       contentType: 'application/json',
       data: JSON.stringify(newBookmark),
-      success: callback,
+      success: response => {
+        callback(response);
+      },
       error: error
     });
   };
