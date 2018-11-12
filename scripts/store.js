@@ -40,6 +40,9 @@ const store = (function() {
     const bookmark = this.findBookmarkById(id);
     Object.assign(bookmark, newBookmark);
   };
+  const setError = function(error) {
+    this.error = error;
+  };
 
   return {
     bookmarks,
@@ -54,6 +57,7 @@ const store = (function() {
     setFilterRating,
     toggleEditBookmark,
     toggleExpandedBookmark,
-    findAndDelete
+    findAndDelete,
+    setError
   };
 })();

@@ -1,18 +1,24 @@
 const bookmark = (function() {
   const generateAddBookmarkForm = function() {
     return `
-    <h2>Create a new Bookmark📚🔖</h2>
-    <label for="title">Title</label> <input id="title" name="title" type="text
-    class="input-bookmark-title" placeholder="enter title" >
+    <h2 class="page-title">Create a new Bookmark📚🔖</h2>
+    <label for="title">Title</label> 
+    <input
+      required="true"
+      id="title"
+      name="title"
+      type="text"
+      class="input-bookmark-title" placeholder="enter title" />
     <label for="url">Link</label>
     <input
+      required="true"
       id="url"
       type="text"
       class="input-bookmark-url"
       placeholder="must start with https://"
       name="url"
     />
-    <label for="description">Description</label>
+    
     <textarea
       type="text"
       id="description"
@@ -59,13 +65,14 @@ const bookmark = (function() {
         rating += '<i class="far fa-star"></i>';
       }
     } else {
-      rating = 'No rating yet';
+      rating = '';
     }
 
     const description =
       bookmark.description !== '' ? bookmark.description : 'No description yet';
+    console.log(description);
 
-    let details = bookmark.expanded
+    const details = bookmark.expanded
       ? `<p>${description}</p>
         <a href="${
           bookmark.url
@@ -191,16 +198,11 @@ const bookmark = (function() {
 
   const handleDeleteBookmark = function() {
     $('.js-bookmark-list').on('click', '.js-delete-bookmark', event => {
-      const delete_confirm = confirm(
-        'Are you sure you want to delete this bookmark?'
-      );
-      if (delete_confirm) {
-        const id = getIdFromBookmark(event.target);
-        api.deleteBookmark(id, () => {
-          store.findAndDelete(id);
-          render();
-        });
-      }
+      const id = getIdFromBookmark(event.target);
+      api.deleteBookmark(id, () => {
+        store.findAndDelete(id);
+        render();
+      });
     });
   };
 
@@ -217,7 +219,6 @@ const bookmark = (function() {
     $('.js-bookmark-list').on('click', '.js-edit-bookmark', event => {
       const id = getIdFromBookmark(event.target);
       store.toggleEditBookmark(id);
-
       render();
     });
   };
@@ -234,6 +235,7 @@ const bookmark = (function() {
     $('.js-bookmark-list').on('submit', '.js-editing-form', event => {
       event.preventDefault();
       const newBookmark = $(event.target).serializeJson();
+      console.log(newBookmark);
       const currentBookmark = $(event.target).closest('.js-bookmark-element');
 
       const id = getIdFromBookmark(currentBookmark);
@@ -262,6 +264,14 @@ const bookmark = (function() {
 
       render();
     });
+  };
+
+  const showErrorMessage = function(error) {
+    $('.js-error-message').html(error);
+  };
+
+  const showErrorMessageEdit = function(error) {
+    $('.js-edit-error-message').html(error);
   };
 
   const render = function() {
@@ -296,6 +306,8 @@ const bookmark = (function() {
     handleSaveEditBookmark();
     handleCancelEditBookmark();
     handleFilterRatings();
+    showErrorMessage();
+    showErrorMessageEdit();
   };
 
   return {

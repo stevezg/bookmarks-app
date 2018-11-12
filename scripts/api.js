@@ -32,7 +32,6 @@ const api = (function() {
     });
   };
 
-  //api requesting to delete bookmark from server
   const deleteBookmark = function(id, callback) {
     $.ajax({
       url: `${BASE_URL}/bookmarks/${id}`,
