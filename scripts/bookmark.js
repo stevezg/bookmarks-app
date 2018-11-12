@@ -9,7 +9,7 @@ const bookmark = (function() {
       id="url"
       type="text"
       class="input-bookmark-url"
-      placeholder="enter url"
+      placeholder="must start with https://"
       name="url"
     />
     <label for="description">Description</label>
