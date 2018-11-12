@@ -35,8 +35,9 @@ button:hover {
 
 .bookmark-list > li {
   margin-bottom: 20px;
-  border: 1px solid powderblue;
+  border: 2px solid #FF9800;
   padding: 20px;
+  text-align: center;
 }
 
 .error-message {
