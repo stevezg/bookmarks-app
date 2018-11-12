@@ -62,13 +62,14 @@ const bookmark = (function() {
       rating = 'No rating yet';
     }
 
-    const desc = bookmark.desc !== '' ? bookmark.desc : 'No description yet';
+    const description =
+      bookmark.description !== '' ? bookmark.description : 'No description yet';
 
     let details = bookmark.expanded
-      ? `  <p>${desc}</p>
+      ? `<p>${description}</p>
         <a href="${
           bookmark.url
-        } class = "visit-site" target = "_blank">Visit site</a>
+        }" class = "visit-site" target = "_blank">Visit site</a>
         <button type = "button" class = "details js-details" > Less Details <i class="fas fa-caret-up"></i> </button>
         `
       : '<button type = "button" class = "details js-details" > More Details <i class="fas fa-caret-down"></i> </button>';
@@ -91,9 +92,9 @@ const bookmark = (function() {
         <input id = "url" name = "url" type = "text" class = "edit-bookmark-url js-edit-bookmark-url" value = "${
           bookmark.url
         }"></input>
-        <label for = "desc">Description:</label>
-        <textarea id = "desc" name = "desc" class = "edit-bookmark-desc js-edit-bookmark-description" value = "${desc}" >${
-        bookmark.desc
+        <label for = "description">Description:</label>
+        <textarea id = "description" name = "description" class = "edit-bookmark-description js-edit-bookmark-description" value = "${description}" >${
+        bookmark.description
       }</textarea>
         <label for = "rating">Rating:</label>
         <select id = "rating" name = "rating" class = "input-edit-bookmark-rating js-input-edit-bookmark-rating">
@@ -116,10 +117,11 @@ const bookmark = (function() {
         bookmark.id
       }">
       <div class = "float-right">
-      <button aria-label = "edit bookmark" class = "edit-bookmark  js-edit-bookmark"><i class="fas fa-edit"></i></button>
-      <button aria-label = "delete bookmark" class = "delete-bookmark js-delete-bookmark"><i class="fas fa-trash-alt "></i></button>
-      </div>
       <p class = "bookmark-title js-bookmark-title">${bookmark.title}</p>
+      <button aria-label = "edit bookmark" class = "edit-bookmark  js-edit-bookmark">edit</button>
+      <button aria-label = "delete bookmark" class = "delete-bookmark js-delete-bookmark">delete</button>
+      </div>
+ 
       <div>
         <p>${rating}</p>
         ${details}
@@ -144,14 +146,9 @@ const bookmark = (function() {
     });
   };
 
-  //in charge of the cancel adding bookmark functionality
   const handleCancelAddBookmark = function() {
-    //event listener for when user clicks cancel in the form
     $('form').on('click', '.cancel-create-bookmark-button', event => {
-      console.log('here');
-      //toggle adding in the store
       store.toggleAddingABookmark();
-      //toggle the hidden bool for form
       $('form').toggle();
       renderAddBookmarkForm();
     });
@@ -163,6 +160,7 @@ const bookmark = (function() {
       const newBookmark = $(event.target).serializeJson();
 
       console.log(newBookmark);
+
       api.createBookmark(
         newBookmark,
         bookmark => {
@@ -191,9 +189,82 @@ const bookmark = (function() {
     }
   });
 
-  const render = function() {
-    //copy the store bookmarks so we can filter it if necassary, but doesnt change the store itself
+  const handleDeleteBookmark = function() {
+    $('.js-bookmark-list').on('click', '.js-delete-bookmark', event => {
+      const delete_confirm = confirm(
+        'Are you sure you want to delete this bookmark?'
+      );
+      if (delete_confirm) {
+        const id = getIdFromBookmark(event.target);
+        api.deleteBookmark(id, () => {
+          store.findAndDelete(id);
+          render();
+        });
+      }
+    });
+  };
 
+  const handleExpandBookmark = function() {
+    $('.js-bookmark-list').on('click', '.js-details', event => {
+      console.log('here');
+      const id = getIdFromBookmark(event.target);
+      store.toggleExpandedBookmark(id);
+      render();
+    });
+  };
+
+  const handleEditingBookmark = function() {
+    $('.js-bookmark-list').on('click', '.js-edit-bookmark', event => {
+      const id = getIdFromBookmark(event.target);
+      store.toggleEditBookmark(id);
+
+      render();
+    });
+  };
+
+  const handleCancelEditBookmark = function() {
+    $('.js-bookmark-list').on('click', '.js-cancel-edit-button', event => {
+      const bookmark = $(event.target).closest('.js-bookmark-element');
+      const id = getIdFromBookmark(bookmark);
+      store.toggleEditBookmark(id);
+      render();
+    });
+  };
+  const handleSaveEditBookmark = function() {
+    $('.js-bookmark-list').on('submit', '.js-editing-form', event => {
+      event.preventDefault();
+      const newBookmark = $(event.target).serializeJson();
+      const currentBookmark = $(event.target).closest('.js-bookmark-element');
+
+      const id = getIdFromBookmark(currentBookmark);
+
+      api.updateBookmark(
+        newBookmark,
+        id,
+        () => {
+          newBookmark.expanded = false;
+          store.updateBookmark(newBookmark, id);
+          store.toggleEditBookmark(id);
+          render();
+        },
+
+        error => {
+          console.log('there was an error');
+        }
+      );
+    });
+  };
+
+  const handleFilterRatings = function() {
+    $('.js-filter-rating-dropdown').change(event => {
+      const filter_rating = $('.js-filter-rating-dropdown').val();
+      store.setFilterRating(filter_rating);
+
+      render();
+    });
+  };
+
+  const render = function() {
     let bookmarks = [...store.bookmarks];
 
     console.log(bookmarks);
@@ -202,7 +273,6 @@ const bookmark = (function() {
       bookmarks = bookmarks.filter(bookmark => bookmark.rating >= store.filter);
     }
 
-    //generate string from what's in the store
     const html = generateAddBookmarksListComponent(bookmarks);
     $('.js-bookmark-list').html(html);
   };
@@ -220,6 +290,12 @@ const bookmark = (function() {
     handleCreateBookmark();
     getIdFromBookmark();
     handleCancelAddBookmark();
+    handleDeleteBookmark();
+    handleExpandBookmark();
+    handleEditingBookmark();
+    handleSaveEditBookmark();
+    handleCancelEditBookmark();
+    handleFilterRatings();
   };
 
   return {
