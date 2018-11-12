@@ -21,9 +21,9 @@ const bookmark = (function() {
     
     <textarea
       type="text"
-      id="description"
-      name="description"
-      class="input-bookmark-description"
+      id="desc"
+      name="desc"
+      class="input-bookmark-desc"
       placeholder="Enter a description"
     ></textarea>
     <label for="rating">Rating</label>
@@ -68,12 +68,11 @@ const bookmark = (function() {
       rating = '';
     }
 
-    const description =
-      bookmark.description !== '' ? bookmark.description : 'No description yet';
-    console.log(description);
+    const desc = bookmark.desc !== '' ? bookmark.desc : '';
+    console.log(desc);
 
     const details = bookmark.expanded
-      ? `<p>${description}</p>
+      ? `<p>${desc}</p>
         <a href="${
           bookmark.url
         }" class = "visit-site" target = "_blank">Visit site</a>
@@ -99,9 +98,9 @@ const bookmark = (function() {
         <input id = "url" name = "url" type = "text" class = "edit-bookmark-url js-edit-bookmark-url" value = "${
           bookmark.url
         }"></input>
-        <label for = "description">Description:</label>
-        <textarea id = "description" name = "description" class = "edit-bookmark-description js-edit-bookmark-description" value = "${description}" >${
-        bookmark.description
+        <label for = "desc">Description:</label>
+        <textarea id = "desc" name = "desc" class = "edit-bookmark-desc js-edit-bookmark-desc" value = "${desc}" >${
+        bookmark.desc
       }</textarea>
         <label for = "rating">Rating:</label>
         <select id = "rating" name = "rating" class = "input-edit-bookmark-rating js-input-edit-bookmark-rating">
