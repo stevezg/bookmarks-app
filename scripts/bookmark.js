@@ -90,13 +90,19 @@ const bookmark = (function() {
       <p class = "edit-bookmark-title-p js-bookmark-title">${bookmark.title}</p>
       <form class = "editing-form js-editing-form ">
         <label for = "title">Title:</label>
-        <input id = "title" name = "title" type = "text" class = "edit-bookmark-title js-edit-bookmark-title" value = "${
+        <input required = "true" id = "title" name = "title" type = "text" class = "edit-bookmark-title js-edit-bookmark-title" value = "${
           bookmark.title
         }"></input>
         <label for = "url">Link</label>
-        <input id = "url" name = "url" type = "text" class = "edit-bookmark-url js-edit-bookmark-url" value = "${
+        <input 
+          required = "true"
+          id = "url" 
+          name = "url" 
+          type = "text" 
+          class = "edit-bookmark-url js-edit-bookmark-url" 
+          value = "${
           bookmark.url
-        }"></input>
+        }"/>
         <label for = "desc">Description:</label>
         <textarea id = "desc" name = "desc" class = "edit-bookmark-desc js-edit-bookmark-desc" value = "${desc}" >${
         bookmark.desc
