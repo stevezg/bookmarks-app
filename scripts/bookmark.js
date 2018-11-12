@@ -69,7 +69,6 @@ const bookmark = (function() {
     }
 
     const desc = bookmark.desc !== '' ? bookmark.desc : '';
-    console.log(desc);
 
     const details = bookmark.expanded
       ? `<p>${desc}</p>
@@ -165,7 +164,7 @@ const bookmark = (function() {
       event.preventDefault();
       const newBookmark = $(event.target).serializeJson();
 
-      console.log(newBookmark);
+      // console.log(newBookmark);
 
       api.createBookmark(
         newBookmark,
@@ -207,7 +206,6 @@ const bookmark = (function() {
 
   const handleExpandBookmark = function() {
     $('.js-bookmark-list').on('click', '.js-details', event => {
-      console.log('here');
       const id = getIdFromBookmark(event.target);
       store.toggleExpandedBookmark(id);
       render();
@@ -234,7 +232,7 @@ const bookmark = (function() {
     $('.js-bookmark-list').on('submit', '.js-editing-form', event => {
       event.preventDefault();
       const newBookmark = $(event.target).serializeJson();
-      console.log(newBookmark);
+      // console.log(newBookmark);
       const currentBookmark = $(event.target).closest('.js-bookmark-element');
 
       const id = getIdFromBookmark(currentBookmark);
