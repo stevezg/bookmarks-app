@@ -18,7 +18,7 @@ const bookmark = (function() {
       placeholder="must start with https://"
       name="url"
     />
-    
+    <label for="desc"></label>
     <textarea
       type="text"
       id="desc"
@@ -100,9 +100,7 @@ const bookmark = (function() {
           name = "url" 
           type = "text" 
           class = "edit-bookmark-url js-edit-bookmark-url" 
-          value = "${
-          bookmark.url
-        }"/>
+          value = "${bookmark.url}"/>
         <label for = "desc">Description:</label>
         <textarea id = "desc" name = "desc" class = "edit-bookmark-desc js-edit-bookmark-desc" value = "${desc}" >${
         bookmark.desc
