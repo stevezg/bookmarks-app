@@ -150,7 +150,8 @@ const bookmark = (function() {
     $('.js-begin-add-bookmark').click(event => {
       store.toggleAddingABookmark()
       $('form').toggle()
-
+      store.setError(null)
+      $('.error-message').html(null)
       renderAddBookmarkForm()
     })
   }
@@ -159,6 +160,8 @@ const bookmark = (function() {
     $('form').on('click', '.cancel-create-bookmark-button', event => {
       store.toggleAddingABookmark()
       $('form').toggle()
+      store.setError(null)
+      $('.error-message').html(null)
       renderAddBookmarkForm()
     })
   }
@@ -168,8 +171,6 @@ const bookmark = (function() {
       event.preventDefault()
       const newBookmark = $(event.target).serializeJson()
 
-      // console.log(newBookmark);
-
       api.createBookmark(
         newBookmark,
         bookmark => {
@@ -177,11 +178,14 @@ const bookmark = (function() {
           store.toggleAddingABookmark()
           $('form').toggle()
           store.addBookmark(bookmark)
+          store.setError(null)
+          $('.error-message').html(null)
           renderAddBookmarkForm()
           render()
         },
         error => {
-          console.log('error adding')
+          store.setError(error.responseJSON.message)
+          showErrorMessage(store.error)
         }
       )
     })
@@ -252,7 +256,8 @@ const bookmark = (function() {
         },
 
         error => {
-          console.log('there was an error')
+          store.setError(error.responseJSON.message)
+          showErrorMessage(store.error)
         }
       )
     })
@@ -268,7 +273,7 @@ const bookmark = (function() {
   }
 
   const showErrorMessage = function(error) {
-    $('.js-error-message').html(error)
+    $('.error-message').html(error)
   }
 
   const showErrorMessageEdit = function(error) {

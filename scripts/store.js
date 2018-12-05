@@ -1,5 +1,3 @@
-'use strict';
-
 const store = (function() {
   const bookmarks = [];
   const filter = null;
@@ -42,6 +40,7 @@ const store = (function() {
   };
   const setError = function(error) {
     this.error = error;
+    
   };
 
   return {
