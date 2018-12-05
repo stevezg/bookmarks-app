@@ -20,6 +20,8 @@ const bookmark = (function() {
     />
     
     <textarea
+      rows="10"
+      cols="65"
       type="text"
       id="desc"
       name="desc"
@@ -44,31 +46,29 @@ const bookmark = (function() {
     </button>
     <ul class="bookmark-list js-bookmark-list"></ul>
   </div>
-    `;
-  };
+    `
+  }
 
   const generateAddBookmarksListComponent = function(bookmarks) {
-    return bookmarks
-      .map(bookmark => generateBookmarkElement(bookmark))
-      .join('');
-  };
+    return bookmarks.map(bookmark => generateBookmarkElement(bookmark)).join('')
+  }
 
   const generateBookmarkElement = function(bookmark) {
-    let rating = '';
+    let rating = ''
     if (bookmark.rating) {
-      const number_of_stars = bookmark.rating;
+      const number_of_stars = bookmark.rating
       for (let i = 0; i < number_of_stars; i++) {
-        rating += '<i class="fas fa-star"></i>';
+        rating += '<i class="fas fa-star"></i>'
       }
 
       for (let i = 0; i < 5 - number_of_stars; i++) {
-        rating += '<i class="far fa-star"></i>';
+        rating += '<i class="far fa-star"></i>'
       }
     } else {
-      rating = '';
+      rating = ''
     }
 
-    const desc = bookmark.desc !== '' ? bookmark.desc : '';
+    const desc = bookmark.desc !== '' ? bookmark.desc : ''
 
     const details = bookmark.expanded
       ? `<p>${desc}</p>
@@ -77,11 +77,11 @@ const bookmark = (function() {
         }" class = "visit-site" target = "_blank">Visit site</a>
         <button type = "button" class = "details js-details" > Less Details <i class="fas fa-caret-up"></i> </button>
         `
-      : '<button type = "button" class = "details js-details" > More Details <i class="fas fa-caret-down"></i> </button>';
+      : '<button type = "button" class = "details js-details" > More Details <i class="fas fa-caret-down"></i> </button>'
 
     if (bookmark.editing) {
-      const cell = ['', '', '', '', ''];
-      cell[bookmark.rating - 1] = 'selected';
+      const cell = ['', '', '', '', '']
+      cell[bookmark.rating - 1] = 'selected'
 
       return `
       <li class = "bookmark-element js-bookmark-element" data-bookmark-id = "${
@@ -100,9 +100,7 @@ const bookmark = (function() {
           name = "url" 
           type = "text" 
           class = "edit-bookmark-url js-edit-bookmark-url" 
-          value = "${
-          bookmark.url
-        }"/>
+          value = "${bookmark.url}"/>
         <label for = "desc">Description:</label>
         <textarea id = "desc" name = "desc" class = "edit-bookmark-desc js-edit-bookmark-desc" value = "${desc}" >${
         bookmark.desc
@@ -121,7 +119,7 @@ const bookmark = (function() {
         <button type = "button" class = "cancel-edit-button js-cancel-edit-button"> Cancel </button>
       </form> 
     </li>
-      `;
+      `
     } else {
       return `
       <li class = "bookmark-element js-bookmark-element" data-bookmark-id = "${
@@ -138,183 +136,183 @@ const bookmark = (function() {
         ${details}
       </div>
     </li>
-      `;
+      `
     }
-  };
+  }
 
   const getIdFromBookmark = function(bookmark) {
     return $(bookmark)
       .closest('.js-bookmark-element')
-      .data('bookmark-id');
-  };
+      .data('bookmark-id')
+  }
 
   const handleAddBookmark = function() {
     $('.js-begin-add-bookmark').click(event => {
-      store.toggleAddingABookmark();
-      $('form').toggle();
+      store.toggleAddingABookmark()
+      $('form').toggle()
 
-      renderAddBookmarkForm();
-    });
-  };
+      renderAddBookmarkForm()
+    })
+  }
 
   const handleCancelAddBookmark = function() {
     $('form').on('click', '.cancel-create-bookmark-button', event => {
-      store.toggleAddingABookmark();
-      $('form').toggle();
-      renderAddBookmarkForm();
-    });
-  };
+      store.toggleAddingABookmark()
+      $('form').toggle()
+      renderAddBookmarkForm()
+    })
+  }
 
   const handleCreateBookmark = function() {
     $('form').on('submit', event => {
-      event.preventDefault();
-      const newBookmark = $(event.target).serializeJson();
+      event.preventDefault()
+      const newBookmark = $(event.target).serializeJson()
 
       // console.log(newBookmark);
 
       api.createBookmark(
         newBookmark,
         bookmark => {
-          bookmark.expanded = false;
-          store.toggleAddingABookmark();
-          $('form').toggle();
-          store.addBookmark(bookmark);
-          renderAddBookmarkForm();
-          render();
+          bookmark.expanded = false
+          store.toggleAddingABookmark()
+          $('form').toggle()
+          store.addBookmark(bookmark)
+          renderAddBookmarkForm()
+          render()
         },
         error => {
-          console.log('error adding');
+          console.log('error adding')
         }
-      );
-    });
-  };
+      )
+    })
+  }
 
   $.fn.extend({
     serializeJson: function() {
-      const obj = {};
-      const data = new FormData(this[0]);
+      const obj = {}
+      const data = new FormData(this[0])
       data.forEach((value, key) => {
-        obj[key] = value;
-      });
-      return obj;
+        obj[key] = value
+      })
+      return obj
     }
-  });
+  })
 
   const handleDeleteBookmark = function() {
     $('.js-bookmark-list').on('click', '.js-delete-bookmark', event => {
-      const id = getIdFromBookmark(event.target);
+      const id = getIdFromBookmark(event.target)
       api.deleteBookmark(id, () => {
-        store.findAndDelete(id);
-        render();
-      });
-    });
-  };
+        store.findAndDelete(id)
+        render()
+      })
+    })
+  }
 
   const handleExpandBookmark = function() {
     $('.js-bookmark-list').on('click', '.js-details', event => {
-      const id = getIdFromBookmark(event.target);
-      store.toggleExpandedBookmark(id);
-      render();
-    });
-  };
+      const id = getIdFromBookmark(event.target)
+      store.toggleExpandedBookmark(id)
+      render()
+    })
+  }
 
   const handleEditingBookmark = function() {
     $('.js-bookmark-list').on('click', '.js-edit-bookmark', event => {
-      const id = getIdFromBookmark(event.target);
-      store.toggleEditBookmark(id);
-      render();
-    });
-  };
+      const id = getIdFromBookmark(event.target)
+      store.toggleEditBookmark(id)
+      render()
+    })
+  }
 
   const handleCancelEditBookmark = function() {
     $('.js-bookmark-list').on('click', '.js-cancel-edit-button', event => {
-      const bookmark = $(event.target).closest('.js-bookmark-element');
-      const id = getIdFromBookmark(bookmark);
-      store.toggleEditBookmark(id);
-      render();
-    });
-  };
+      const bookmark = $(event.target).closest('.js-bookmark-element')
+      const id = getIdFromBookmark(bookmark)
+      store.toggleEditBookmark(id)
+      render()
+    })
+  }
   const handleSaveEditBookmark = function() {
     $('.js-bookmark-list').on('submit', '.js-editing-form', event => {
-      event.preventDefault();
-      const newBookmark = $(event.target).serializeJson();
+      event.preventDefault()
+      const newBookmark = $(event.target).serializeJson()
       // console.log(newBookmark);
-      const currentBookmark = $(event.target).closest('.js-bookmark-element');
+      const currentBookmark = $(event.target).closest('.js-bookmark-element')
 
-      const id = getIdFromBookmark(currentBookmark);
+      const id = getIdFromBookmark(currentBookmark)
 
       api.updateBookmark(
         newBookmark,
         id,
         () => {
-          newBookmark.expanded = false;
-          store.updateBookmark(newBookmark, id);
-          store.toggleEditBookmark(id);
-          render();
+          newBookmark.expanded = false
+          store.updateBookmark(newBookmark, id)
+          store.toggleEditBookmark(id)
+          render()
         },
 
         error => {
-          console.log('there was an error');
+          console.log('there was an error')
         }
-      );
-    });
-  };
+      )
+    })
+  }
 
   const handleFilterRatings = function() {
     $('.js-filter-rating-dropdown').change(event => {
-      const filter_rating = $('.js-filter-rating-dropdown').val();
-      store.setFilterRating(filter_rating);
+      const filter_rating = $('.js-filter-rating-dropdown').val()
+      store.setFilterRating(filter_rating)
 
-      render();
-    });
-  };
+      render()
+    })
+  }
 
   const showErrorMessage = function(error) {
-    $('.js-error-message').html(error);
-  };
+    $('.js-error-message').html(error)
+  }
 
   const showErrorMessageEdit = function(error) {
-    $('.js-edit-error-message').html(error);
-  };
+    $('.js-edit-error-message').html(error)
+  }
 
   const render = function() {
-    let bookmarks = [...store.bookmarks];
+    let bookmarks = [...store.bookmarks]
 
-    console.log(bookmarks);
+    console.log(bookmarks)
 
     if (store.filter) {
-      bookmarks = bookmarks.filter(bookmark => bookmark.rating >= store.filter);
+      bookmarks = bookmarks.filter(bookmark => bookmark.rating >= store.filter)
     }
 
-    const html = generateAddBookmarksListComponent(bookmarks);
-    $('.js-bookmark-list').html(html);
-  };
+    const html = generateAddBookmarksListComponent(bookmarks)
+    $('.js-bookmark-list').html(html)
+  }
 
   const renderAddBookmarkForm = function() {
     if (store.adding) {
-      $('.js-adding-new-bookmark-form').html(generateAddBookmarkForm());
+      $('.js-adding-new-bookmark-form').html(generateAddBookmarkForm())
     } else {
-      $('.js-adding-new-bookmark-form').html('');
+      $('.js-adding-new-bookmark-form').html('')
     }
-  };
+  }
 
   const bindEventListeners = function() {
-    handleAddBookmark();
-    handleCreateBookmark();
-    getIdFromBookmark();
-    handleCancelAddBookmark();
-    handleDeleteBookmark();
-    handleExpandBookmark();
-    handleEditingBookmark();
-    handleSaveEditBookmark();
-    handleCancelEditBookmark();
-    handleFilterRatings();
-    showErrorMessage();
-    showErrorMessageEdit();
-  };
+    handleAddBookmark()
+    handleCreateBookmark()
+    getIdFromBookmark()
+    handleCancelAddBookmark()
+    handleDeleteBookmark()
+    handleExpandBookmark()
+    handleEditingBookmark()
+    handleSaveEditBookmark()
+    handleCancelEditBookmark()
+    handleFilterRatings()
+    showErrorMessage()
+    showErrorMessageEdit()
+  }
 
   return {
     bindEventListeners,
     render
-  };
-})();
+  }
+})()

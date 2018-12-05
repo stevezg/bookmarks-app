@@ -35,7 +35,7 @@ button:hover {
 
 .bookmark-list > li {
   margin-bottom: 20px;
-  border: 2px solid #FF9800;
+  border: 2px solid #ff9800;
   padding: 20px;
   text-align: center;
 }
@@ -53,4 +53,10 @@ button:hover {
 }
 .fas {
   color: orange;
+}
+.adding-new-bookmark-form {
+  margin-bottom: 20px;
+  border: 2px solid #ff9800;
+  padding: 20px;
+  text-align: center;
 }
